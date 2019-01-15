@@ -6,17 +6,17 @@ pub struct Ai {
 
 
 impl Ai {
-    fn trial(player: u32) {
+    fn trial(_player: u32) {
         unimplemented!();
     }
-    fn update_scores(player: u32) {
+    fn update_scores(_player: u32) {
        unimplemented!();
     }
 
     fn get_best_move() {
         unimplemented!();
     }
-    fn clone_board(original: Board) {
+    fn clone_board(_original: Board) {
        unimplemented!();
     }
     fn player_move() {
