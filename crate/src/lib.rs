@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate cfg_if;
-extern crate web_sys;
 extern crate wasm_bindgen;
+extern crate web_sys;
 
 mod ai;
 mod board;
