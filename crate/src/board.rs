@@ -72,7 +72,21 @@ impl Board {
             }
         }
         //TODO check diagonal
-        Cell::EMPTY
+        let mut left = vec![];
+        let mut right = vec![];
+
+        for i in 0..board_dim {
+            left.push(self.get_cell(i, i));
+            right.push(self.get_cell(board_dim - i - 1, i));
+        }
+
+        for diag in vec![left, right].iter() {
+            if all_equal(diag) && diag[0] != Cell::EMPTY {
+                return diag[0];
+            }
+        }
+
+        Cell::TIE
     }
 }
 
