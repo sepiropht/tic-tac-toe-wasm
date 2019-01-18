@@ -85,7 +85,14 @@ impl Board {
                 return diag[0];
             }
         }
-
+        if self
+            .board
+            .iter()
+            .flat_map(|row| row.iter().map(|state| state))
+            .any(|state| *state == Cell::EMPTY)
+        {
+            return Cell::EMPTY;
+        }
         Cell::TIE
     }
 }
