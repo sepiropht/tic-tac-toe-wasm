@@ -85,6 +85,8 @@ impl Board {
                 return diag[0];
             }
         }
+
+        // check if the game if over
         if self
             .board
             .iter()
@@ -93,6 +95,7 @@ impl Board {
         {
             return Cell::EMPTY;
         }
+        //
         Cell::TIE
     }
 }
@@ -153,7 +156,7 @@ fn test_get_move() {
 }
 
 #[test]
-fn get_empty_cells() {
+fn test_get_empty_cells() {
     let mut board = Board::new(3);
 
     board.player_move(0, 0, Cell::PLAYER1);
@@ -161,4 +164,90 @@ fn get_empty_cells() {
     board.player_move(1, 2, Cell::PLAYER1);
 
     assert!(board.get_empty_cells() == vec![(0, 1), (0, 2), (1, 0), (1, 1), (2, 0), (2, 1)]);
+}
+
+#[test] 
+fn test_check_player1_win() {
+    let mut board = Board::new(3);
+
+    board.player_move(0, 0, Cell::PLAYER1);
+    board.player_move(0, 1, Cell::PLAYER2);
+    board.player_move(0, 2, Cell::PLAYER1);
+    board.player_move(1, 0, Cell::PLAYER1);
+    board.player_move(1, 1, Cell::PLAYER2);
+    board.player_move(1, 2, Cell::PLAYER1);
+    board.player_move(2, 0, Cell::PLAYER1);
+    board.player_move(2, 1, Cell::PLAYER2);
+    board.player_move(2, 2, Cell::PLAYER1);
+
+    assert!(board.check_win() == Cell::PLAYER1); 
+}
+
+#[test] 
+fn test_check_player2_win() {
+    let mut board = Board::new(3);
+
+    board.player_move(0, 0, Cell::PLAYER1);
+    board.player_move(0, 1, Cell::PLAYER2);
+    board.player_move(0, 2, Cell::PLAYER2);
+    board.player_move(1, 0, Cell::PLAYER1);
+    board.player_move(1, 1, Cell::PLAYER2);
+    board.player_move(1, 2, Cell::PLAYER2);
+    board.player_move(2, 0, Cell::PLAYER2);
+    board.player_move(2, 1, Cell::PLAYER2);
+    board.player_move(2, 2, Cell::PLAYER2);
+
+    assert!(board.check_win() == Cell::PLAYER2); 
+}
+
+
+#[test] 
+fn test_check_diaonal_win() {
+    let mut board = Board::new(3);
+
+    board.player_move(0, 0, Cell::PLAYER1);
+    board.player_move(0, 1, Cell::PLAYER2);
+    board.player_move(0, 2, Cell::PLAYER2);
+    board.player_move(1, 0, Cell::PLAYER1);
+    board.player_move(1, 1, Cell::PLAYER1);
+    board.player_move(1, 2, Cell::EMPTY);
+    board.player_move(2, 0, Cell::PLAYER2);
+    board.player_move(2, 1, Cell::PLAYER2);
+    board.player_move(2, 2, Cell::PLAYER1);
+
+    assert!(board.check_win() == Cell::PLAYER1); 
+}
+
+#[test] 
+fn test_check_game_not_finished_yet() {
+    let mut board = Board::new(3);
+
+    board.player_move(0, 0, Cell::EMPTY);
+    board.player_move(0, 1, Cell::PLAYER2);
+    board.player_move(0, 2, Cell::PLAYER2);
+    board.player_move(1, 0, Cell::PLAYER1);
+    board.player_move(1, 1, Cell::PLAYER1);
+    board.player_move(1, 2, Cell::EMPTY);
+    board.player_move(2, 0, Cell::PLAYER2);
+    board.player_move(2, 1, Cell::PLAYER2);
+    board.player_move(2, 2, Cell::PLAYER1);
+
+    assert!(board.check_win() == Cell::EMPTY); 
+}
+
+#[test] 
+fn test_check_tie() {
+    let mut board = Board::new(3);
+
+    board.player_move(0, 0, Cell::PLAYER2);
+    board.player_move(0, 1, Cell::PLAYER2);
+    board.player_move(0, 2, Cell::PLAYER1);
+    board.player_move(1, 0, Cell::PLAYER1);
+    board.player_move(1, 1, Cell::PLAYER1);
+    board.player_move(1, 2, Cell::PLAYER2);
+    board.player_move(2, 0, Cell::PLAYER2);
+    board.player_move(2, 1, Cell::PLAYER2);
+    board.player_move(2, 2, Cell::PLAYER1);
+
+    assert!(board.check_win() == Cell::TIE); 
 }
