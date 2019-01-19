@@ -12,10 +12,19 @@
     "create-rust-webpack": ".bin/create-rust-webpack.js"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
     "@wasm-tool/wasm-pack-plugin": "0.2.0",
+    "babel-loader": "^8.0.5",
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.0",
     "webpack-dev-server": "^3.1.14"
+  },
+  "dependencies": {
+    "react": "^16.8.0-alpha.1",
+    "react-dom": "^16.8.0-alpha.1"
   }
 }
