@@ -1,9 +1,9 @@
 pub struct Board {
-    board: Vec<Vec<Cell>>,
+    pub board: Vec<Vec<Cell>>,
 }
 
 #[derive(Copy, Clone, PartialEq)]
-enum Cell {
+pub enum Cell {
     EMPTY = 0,
     PLAYER1 = 1,
     PLAYER2 = 2,
@@ -30,15 +30,15 @@ impl Board {
         self.board.len()
     }
 
-    fn get_cell(&self, x: usize, y: usize) -> Cell {
+    pub fn get_cell(&self, x: usize, y: usize) -> Cell {
         self.board[x][y]
     }
 
-    fn player_move(&mut self, x: usize, y: usize, player: Cell) {
+    pub fn player_move(&mut self, x: usize, y: usize, player: Cell) {
         self.board[x][y] = player;
     }
 
-    fn get_empty_cells(&self) -> Vec<(usize, usize)> {
+    pub fn get_empty_cells(&self) -> Vec<(usize, usize)> {
         let mut v = vec![];
         for x in 0..self.get_dim() {
             for y in 0..self.get_dim() {
@@ -97,6 +97,13 @@ impl Board {
         }
         //
         Cell::TIE
+    }
+    pub fn clone_board(original: &Board) -> Board {
+        let mut board = vec![];
+        for row in original.board.iter() {
+            board.push(row.clone());
+        }
+        Board { board }
     }
 }
 
@@ -166,7 +173,7 @@ fn test_get_empty_cells() {
     assert!(board.get_empty_cells() == vec![(0, 1), (0, 2), (1, 0), (1, 1), (2, 0), (2, 1)]);
 }
 
-#[test] 
+#[test]
 fn test_check_player1_win() {
     let mut board = Board::new(3);
 
@@ -183,7 +190,7 @@ fn test_check_player1_win() {
     assert!(board.check_win() == Cell::PLAYER1);
 }
 
-#[test] 
+#[test]
 fn test_check_player2_win() {
     let mut board = Board::new(3);
 
@@ -199,7 +206,6 @@ fn test_check_player2_win() {
 
     assert!(board.check_win() == Cell::PLAYER2);
 }
-
 
 #[test]
 fn test_check_diaonal_win() {
