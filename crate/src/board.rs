@@ -71,7 +71,7 @@ impl Board {
                 return col[0];
             }
         }
-        //TODO check diagonal
+        //check diagonal
         let mut left = vec![];
         let mut right = vec![];
 
@@ -180,7 +180,7 @@ fn test_check_player1_win() {
     board.player_move(2, 1, Cell::PLAYER2);
     board.player_move(2, 2, Cell::PLAYER1);
 
-    assert!(board.check_win() == Cell::PLAYER1); 
+    assert!(board.check_win() == Cell::PLAYER1);
 }
 
 #[test] 
@@ -197,11 +197,11 @@ fn test_check_player2_win() {
     board.player_move(2, 1, Cell::PLAYER2);
     board.player_move(2, 2, Cell::PLAYER2);
 
-    assert!(board.check_win() == Cell::PLAYER2); 
+    assert!(board.check_win() == Cell::PLAYER2);
 }
 
 
-#[test] 
+#[test]
 fn test_check_diaonal_win() {
     let mut board = Board::new(3);
 
@@ -215,10 +215,10 @@ fn test_check_diaonal_win() {
     board.player_move(2, 1, Cell::PLAYER2);
     board.player_move(2, 2, Cell::PLAYER1);
 
-    assert!(board.check_win() == Cell::PLAYER1); 
+    assert!(board.check_win() == Cell::PLAYER1);
 }
 
-#[test] 
+#[test]
 fn test_check_game_not_finished_yet() {
     let mut board = Board::new(3);
 
@@ -232,10 +232,10 @@ fn test_check_game_not_finished_yet() {
     board.player_move(2, 1, Cell::PLAYER2);
     board.player_move(2, 2, Cell::PLAYER1);
 
-    assert!(board.check_win() == Cell::EMPTY); 
+    assert!(board.check_win() == Cell::EMPTY);
 }
 
-#[test] 
+#[test]
 fn test_check_tie() {
     let mut board = Board::new(3);
 
@@ -249,5 +249,5 @@ fn test_check_tie() {
     board.player_move(2, 1, Cell::PLAYER2);
     board.player_move(2, 2, Cell::PLAYER1);
 
-    assert!(board.check_win() == Cell::TIE); 
+    assert!(board.check_win() == Cell::TIE);
 }
