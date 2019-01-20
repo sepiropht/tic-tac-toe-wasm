@@ -31,6 +31,7 @@ pub struct Ai {
     }
 }
 */
+#[wasm_bindgen]
 impl Ai {
     fn trial(&mut self, mut player: Cell) {
         let mut empty_cells = get_empty_cells(&self.trial_board);
@@ -83,7 +84,7 @@ impl Ai {
         */
     }
 
-    pub fn get_best_move(&self, board: &Board) -> (usize, usize) {
+    pub fn get_best_move(&self, board: &Board) -> Point {
         let mut high_scores = get_empty_cells(&board)
             .iter()
             .map(|pt| {
@@ -110,12 +111,16 @@ impl Ai {
             high_scores[index]
         };
 
-        (x, y)
+        Point {
+            x: x as u32,
+            y: y as u32
+        }
     }
 
     // Use a Monte Carlo simulation to return a move
     // for the AI player.
-    pub fn ai_move(&mut self, current_board: &Board, player: Cell) -> (usize, usize) {
+    #[wasm_bindgen(js_name=aiMove)]
+    pub fn ai_move(&mut self, current_board: &Board, player: Cell) -> Point {
         let mut scores = vec![];
         for _ in 0..current_board.get_dim() {
             let mut row = vec![];
