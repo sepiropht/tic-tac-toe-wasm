@@ -1,7 +1,12 @@
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
 pub struct Board {
-    pub board: Vec<Vec<Cell>>,
+    board: Vec<Cell>,
 }
 
+
+#[wasm_bindgen]
 #[derive(Copy, Clone, PartialEq)]
 pub enum Cell {
     EMPTY = 0,
@@ -10,54 +15,47 @@ pub enum Cell {
     TIE = 3,
 }
 
+#[wasm_bindgen]
 impl Board {
+    #[wasm_bindgen(constructor, catch)]
     pub fn new(width: u32) -> Board {
         if width < 3 || width > 10 {
-            panic!("Width vaalue must be between 3 and 10 {}", width);
+            panic!("Width value must be between 3 and 10 {}", width);
         }
         let mut board = vec![];
-        for _ in 0..width {
-            let mut row = vec![];
-            for _ in 0..width {
-                row.push(Cell::EMPTY);
-            }
-            board.push(row);
+        for _ in 0..width.pow(2) {
+            board.push(Cell::EMPTY);
         }
 
         Self { board }
     }
     pub fn get_dim(&self) -> usize {
-        self.board.len()
+        (self.board.len() as f64).sqrt() as usize
     }
 
+    #[wasm_bindgen(js_name=getCell)]
     pub fn get_cell(&self, x: usize, y: usize) -> Cell {
-        self.board[x][y]
+        self.board[self.get_index(x, y)]
     }
 
+    pub fn get_index(&self, x: usize, y: usize) -> usize {
+        self.get_dim() * x + y
+    }
+
+    #[wasm_bindgen(js_name=playerMove)]
     pub fn player_move(&mut self, x: usize, y: usize, player: Cell) {
-        self.board[x][y] = player;
+        let index = self.get_index(x, y);
+        self.board[index] = player;
     }
 
-    pub fn get_empty_cells(&self) -> Vec<(usize, usize)> {
-        let mut v = vec![];
-        for x in 0..self.get_dim() {
-            for y in 0..self.get_dim() {
-                let current_cell = self.board[x][y];
-                if current_cell == Cell::EMPTY {
-                    v.push((x, y));
-                }
-            }
-        }
-        v
-    }
-
+    #[wasm_bindgen(js_name=checkWin)]
     pub fn check_win(&self) -> Cell {
         let board_dim = self.get_dim();
 
         //Check rows
-        for x in 0..board_dim {
-            if all_equal(&self.board[x]) && self.board[x][0] != Cell::EMPTY {
-                return self.board[x][0];
+        for row in self.board.chunks(board_dim) {
+            if all_equal(row) && row[0] != Cell::EMPTY {
+                return row[0]
             }
         }
 
@@ -90,8 +88,7 @@ impl Board {
         if self
             .board
             .iter()
-            .flat_map(|row| row.iter().map(|state| state))
-            .any(|state| *state == Cell::EMPTY)
+            .any(|cell| *cell == Cell::EMPTY)
         {
             return Cell::EMPTY;
         }
@@ -100,14 +97,14 @@ impl Board {
     }
     pub fn clone_board(original: &Board) -> Board {
         let mut board = vec![];
-        for row in original.board.iter() {
-            board.push(row.clone());
+        for cell in original.board.iter() {
+            board.push(cell.clone());
         }
         Board { board }
     }
 }
 
-fn all_equal(v: &Vec<Cell>) -> bool {
+fn all_equal(v: &[Cell]) -> bool {
     !v.iter().any(|curr| *curr != v[0])
 }
 
@@ -117,9 +114,15 @@ fn test_constructor() {
     assert!(
         board.board
             == vec![
-                vec![Cell::EMPTY, Cell::EMPTY, Cell::EMPTY],
-                vec![Cell::EMPTY, Cell::EMPTY, Cell::EMPTY],
-                vec![Cell::EMPTY, Cell::EMPTY, Cell::EMPTY]
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY
             ]
     );
 
@@ -127,10 +130,22 @@ fn test_constructor() {
     assert!(
         board.board
             == vec![
-                vec![Cell::EMPTY, Cell::EMPTY, Cell::EMPTY, Cell::EMPTY],
-                vec![Cell::EMPTY, Cell::EMPTY, Cell::EMPTY, Cell::EMPTY],
-                vec![Cell::EMPTY, Cell::EMPTY, Cell::EMPTY, Cell::EMPTY],
-                vec![Cell::EMPTY, Cell::EMPTY, Cell::EMPTY, Cell::EMPTY]
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY,
+                Cell::EMPTY
             ]
     );
 }
@@ -162,16 +177,7 @@ fn test_get_move() {
     assert!(board.get_cell(0, 1) == Cell::EMPTY);
 }
 
-#[test]
-fn test_get_empty_cells() {
-    let mut board = Board::new(3);
 
-    board.player_move(0, 0, Cell::PLAYER1);
-    board.player_move(2, 2, Cell::PLAYER2);
-    board.player_move(1, 2, Cell::PLAYER1);
-
-    assert!(board.get_empty_cells() == vec![(0, 1), (0, 2), (1, 0), (1, 1), (2, 0), (2, 1)]);
-}
 
 #[test]
 fn test_check_player1_win() {
