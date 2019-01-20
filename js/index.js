@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import("../crate/pkg").then(module => {
+import("../crate/pkg").then(({Board, Ai}) => {
   ReactDOM.render(
       <div>Hello Wasm!</div>,
       document.getElementById('app')
   )
-  debugger;
-  const board = module.Board.new(3);
-  const ai = module.Ai;
+  const board = new Board(3);
+  const ai = Ai;
+  console.log(board, ai);
 });

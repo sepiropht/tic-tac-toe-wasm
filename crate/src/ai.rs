@@ -10,13 +10,26 @@ extern "C" {
 // #[wasm_bindgen(js_namespace = console)]
 // // fn log(message: String);
 }
-
+#[wasm_bindgen]
+pub struct Point {
+    x: u32,
+    y: u32,
+}
+#[wasm_bindgen]
 pub struct Ai {
     num_trial: u32,
     trial_board: Board,
     scores: Vec<Vec<u32>>,
 }
 
+    pub fn get_coord(&self, index: usize) -> Point {
+        let x = index / self.get_dim();
+        let y = index - (self.get_dim() * x);
+        Point {
+            x: x as u32,
+            y: y as u32
+        }
+    }
 impl Ai {
     fn trial(&mut self, mut player: Cell) {
         let mut empty_cells = self.trial_board.get_empty_cells();
@@ -112,3 +125,29 @@ impl Ai {
         self.get_best_move(&current_board)
     }
 }
+
+ fn get_empty_cells(&board: Board) -> Vec<Point> {
+        let mut v = vec![];
+        for x in 0..board.get_dim() {
+            for y in 0..board.get_dim() {
+                let current_cell = board.get_cell(x, y);
+                if current_cell == Cell::EMPTY {
+                    v.push( Point {
+                        x: x as u32,
+                        y: y as u32
+                    });
+                }
+            }
+        }
+        v
+    }
+/*#[test]
+fn test_get_empty_cells() {
+    let mut board = Board::new(3);
+
+    board.player_move(0, 0, Cell::PLAYER1);
+    board.player_move(2, 2, Cell::PLAYER2);
+    board.player_move(1, 2, Cell::PLAYER1);
+
+    assert!(board.get_empty_cells() == vec![(0, 1), (0, 2), (1, 0), (1, 1), (2, 0), (2, 1)]);
+}*/
