@@ -22,23 +22,27 @@ pub struct Ai {
     scores: Vec<Vec<u32>>,
 }
 
-    pub fn get_coord(&self, index: usize) -> Point {
-        let x = index / self.get_dim();
-        let y = index - (self.get_dim() * x);
-        Point {
-            x: x as u32,
-            y: y as u32
-        }
+/*   pub fn get_coord(&self, index: usize) -> Point {
+    let x = index / self.get_dim();
+    let y = index - (self.get_dim() * x);
+    Point {
+        x: x as u32,
+        y: y as u32
     }
+}
+*/
 impl Ai {
     fn trial(&mut self, mut player: Cell) {
-        let mut empty_cells = self.trial_board.get_empty_cells();
+        let mut empty_cells = get_empty_cells(&self.trial_board);
 
         while self.trial_board.check_win() == Cell::EMPTY {
             let index = floor(random() * empty_cells.len() as f64) as usize;
-            let (x, y) = empty_cells[index];
-            self.trial_board.player_move(x, y, player);
-            empty_cells = self.trial_board.get_empty_cells();
+            {
+                let pt = &empty_cells[index];
+                self.trial_board
+                    .player_move(pt.x as usize, pt.y as usize, player);
+            }
+            empty_cells = get_empty_cells(&self.trial_board);
             player = match player {
                 Cell::PLAYER1 => Cell::PLAYER2,
                 Cell::PLAYER2 => Cell::PLAYER1,
@@ -80,10 +84,15 @@ impl Ai {
     }
 
     pub fn get_best_move(&self, board: &Board) -> (usize, usize) {
-        let mut high_scores = board
-            .get_empty_cells()
+        let mut high_scores = get_empty_cells(&board)
             .iter()
-            .map(|(x, y)| (*x, *y, self.scores[*x][*y]))
+            .map(|pt| {
+                (
+                    pt.x as usize,
+                    pt.y as usize,
+                    self.scores[pt.x as usize][pt.y as usize],
+                )
+            })
             .collect::<Vec<(usize, usize, u32)>>();
 
         high_scores.sort_by(|a, b| a.2.partial_cmp(&b.2).unwrap());
@@ -126,21 +135,21 @@ impl Ai {
     }
 }
 
- fn get_empty_cells(&board: Board) -> Vec<Point> {
-        let mut v = vec![];
-        for x in 0..board.get_dim() {
-            for y in 0..board.get_dim() {
-                let current_cell = board.get_cell(x, y);
-                if current_cell == Cell::EMPTY {
-                    v.push( Point {
-                        x: x as u32,
-                        y: y as u32
-                    });
-                }
+fn get_empty_cells(board: &Board) -> Vec<Point> {
+    let mut v = vec![];
+    for x in 0..board.get_dim() {
+        for y in 0..board.get_dim() {
+            let current_cell = board.get_cell(x, y);
+            if current_cell == Cell::EMPTY {
+                v.push(Point {
+                    x: x as u32,
+                    y: y as u32,
+                });
             }
         }
-        v
     }
+    v
+}
 /*#[test]
 fn test_get_empty_cells() {
     let mut board = Board::new(3);
