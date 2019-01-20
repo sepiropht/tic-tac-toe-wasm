@@ -11,6 +11,7 @@ extern "C" {
 // // fn log(message: String);
 }
 #[wasm_bindgen]
+#[derive(PartialEq)]
 pub struct Point {
     x: u32,
     y: u32,
@@ -113,7 +114,7 @@ impl Ai {
 
         Point {
             x: x as u32,
-            y: y as u32
+            y: y as u32,
         }
     }
 
@@ -155,7 +156,7 @@ fn get_empty_cells(board: &Board) -> Vec<Point> {
     }
     v
 }
-/*#[test]
+#[test]
 fn test_get_empty_cells() {
     let mut board = Board::new(3);
 
@@ -163,5 +164,15 @@ fn test_get_empty_cells() {
     board.player_move(2, 2, Cell::PLAYER2);
     board.player_move(1, 2, Cell::PLAYER1);
 
-    assert!(board.get_empty_cells() == vec![(0, 1), (0, 2), (1, 0), (1, 1), (2, 0), (2, 1)]);
-}*/
+    assert!(
+        get_empty_cells(&board)
+            == vec![
+                Point { x: 0, y: 1 },
+                Point { x: 0, y: 2 },
+                Point { x: 1, y: 0 },
+                Point { x: 1, y: 1 },
+                Point { x: 2, y: 0 },
+                Point { x: 2, y: 1 }
+            ]
+    );
+}
