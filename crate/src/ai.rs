@@ -54,8 +54,7 @@ impl Ai {
     }
 
     pub fn update_scores(&mut self, player: Cell) {
-        unimplemented!();
-        /* let winner = self.trial_board.check_win();
+        let winner = self.trial_board.check_win();
         let score_player = 2;
         let score_other = 1;
         if winner == Cell::PLAYER1 || winner == Cell::PLAYER2 {
@@ -64,25 +63,26 @@ impl Ai {
                 _ => Cell::PLAYER1
             };
 
-            self.scores.iter().enumerate().for_each(|(row_ind, row)| {
-                row.iter().enumerate().for_each(|(cell_ind, _)| {
+            self.scores = self.scores.clone().into_iter().enumerate().map(|(row_ind, row)| {
+                row.into_iter().enumerate().map(|(cell_ind, cell)| {
                   if self.trial_board.get_cell(row_ind, cell_ind) == player {
                       if player == winner {
-                          self.scores[row_ind][cell_ind] += score_player;
+                          cell + score_player
                       } else {
-                          self.scores[row_ind][cell_ind] += score_player;
+                          cell - score_player
                       }
                   } else if self.trial_board.get_cell(row_ind, cell_ind) == other {
                       if player == winner {
-                          self.scores[row_ind][cell_ind] -= score_other;
+                          cell - score_other
                       } else {
-                          self.scores[row_ind][cell_ind] += score_other;
+                          cell + score_other
                       }
+                  } else {
+                      cell
                   }
-               })
-            })
+               }).collect()
+            }).collect()
         }
-        */
     }
 
     pub fn get_best_move(&self, board: &Board) -> Point {
