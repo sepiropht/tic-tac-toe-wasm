@@ -1,15 +1,14 @@
 use board::Board;
 use board::Cell;
 use wasm_bindgen::prelude::*;
+extern crate js_sys;
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = Math)]
-    fn random() -> f64;
-    fn floor(n: f64) -> f64;
-// #[wasm_bindgen(js_namespace = console)]
-// // fn log(message: String);
+     #[wasm_bindgen(js_namespace = console)]
+         fn log(message: String);
 }
+
 #[wasm_bindgen]
 #[derive(PartialEq)]
 pub struct Point {
@@ -34,11 +33,18 @@ pub struct Ai {
 */
 #[wasm_bindgen]
 impl Ai {
+    #[wasm_bindgen(constructor, catch)]
+    pub fn new() -> Ai {
+        Ai {num_trial: 1000,
+        trial_board: Board::new(3),
+        scores: vec![vec![0]],
+        }
+    }
     fn trial(&mut self, mut player: Cell) {
         let mut empty_cells = get_empty_cells(&self.trial_board);
 
         while self.trial_board.check_win() == Cell::EMPTY {
-            let index = floor(random() * empty_cells.len() as f64) as usize;
+            let index = js_sys::Math::floor(js_sys::Math::random() * empty_cells.len() as f64) as usize;
             {
                 let pt = &empty_cells[index];
                 self.trial_board
@@ -62,17 +68,20 @@ impl Ai {
                 Cell::PLAYER1 => Cell::PLAYER2,
                 _ => Cell::PLAYER1
             };
-
+            log("yeah5".to_string());
             self.scores = self.scores.clone().into_iter().enumerate().map(|(row_ind, row)| {
                 row.into_iter().enumerate().map(|(cell_ind, cell)| {
                   if self.trial_board.get_cell(row_ind, cell_ind) == player {
                       if player == winner {
+                          log("yeah6".to_string());
                           cell + score_player
                       } else {
+                          log("yeah6".to_string());
                           cell - score_player
                       }
                   } else if self.trial_board.get_cell(row_ind, cell_ind) == other {
                       if player == winner {
+
                           cell - score_other
                       } else {
                           cell + score_other
@@ -108,7 +117,7 @@ impl Ai {
         let (x, y, _) = if high_scores.len() == 1 {
             high_scores[0]
         } else {
-            let index = floor(random() * high_scores.len() as f64) as usize;
+            let index = js_sys::Math::floor(js_sys::Math::random() * high_scores.len() as f64) as usize;
             high_scores[index]
         };
 
@@ -131,11 +140,14 @@ impl Ai {
             scores.push(row);
         }
         self.scores = scores;
-
+        log("yeah1".to_string());
         for _ in 0..self.num_trial {
             self.trial_board = Board::clone_board(&current_board);;
+            log("yeah2".to_string());
             self.trial(player);
+            log("yeah3".to_string());
             self.update_scores(player);
+            log("yeah4".to_string());
         }
         self.get_best_move(&current_board)
     }
