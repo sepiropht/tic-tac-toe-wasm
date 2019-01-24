@@ -1,12 +1,14 @@
 {
-  "author": "Nick Fitzgerald <nfitzgerald@mozilla.com>",
-  "name": "create-rust-webpack",
+  "author": "William Mbotta <sergembotta@mailoo.com>",
+  "name": "tic-tac-toe-wasm",
   "version": "0.1.5",
-  "repository": "https://github.com/rustwasm/rust-webpack-template",
+  "repository": "https://github.com/sepiropht/tic-tac-toe-wasm",
   "license": "Apache-2.0/MIT",
   "scripts": {
     "start": "webpack-dev-server -d",
-    "build": "webpack"
+    "build": "webpack",
+    "serve": "serve ./dist",
+    "deploy": "gh-pages -d dist"
   },
   "bin": {
     "create-rust-webpack": ".bin/create-rust-webpack.js"
@@ -18,7 +20,9 @@
     "@babel/preset-react": "^7.0.0",
     "@wasm-tool/wasm-pack-plugin": "0.2.0",
     "babel-loader": "^8.0.5",
+    "gh-pages": "^2.0.1",
     "html-webpack-plugin": "^3.2.0",
+    "serve": "^10.1.1",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.0",
     "webpack-dev-server": "^3.1.14"
