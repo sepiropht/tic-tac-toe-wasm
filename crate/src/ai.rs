@@ -57,7 +57,7 @@ impl Ai {
     }
     fn trial(&mut self, mut player: Cell) {
         let mut empty_cells = get_empty_cells(&self.trial_board);
-
+        // Simulate a complete game between the currentState of the board and the endgame
         while self.trial_board.check_win() == Cell::EMPTY {
             let index =
                 js_sys::Math::floor(js_sys::Math::random() * empty_cells.len() as f64) as usize;
@@ -74,7 +74,12 @@ impl Ai {
             }
         }
     }
-
+    /*Put a weigth on each cell according to the result of the trial
+      if the currentPlayer win the trial then all the cells where you have 'ENUM::CURRENTPLAYER' is incremented
+      orthewise decremented
+      this code is called trial_num times aka 1000 times!!
+      this is necessary to make the ai unbeatable
+     */
     pub fn update_scores(&mut self, player: Cell) {
         let winner = self.trial_board.check_win();
         let score_player = 2;
@@ -97,7 +102,7 @@ impl Ai {
                         if player == winner {
                             log("yeah11".to_string());
                         // TODO
-                        // Find help: why these mutations are impossible
+                        // help: why these mutations are impossible
                         // at runtime ?
                         //self.scores[row_ind][cell_ind] += score_player
                         } else {
@@ -117,7 +122,7 @@ impl Ai {
             }
         }
     }
-
+    // Take all the best scores form self.scores then randomly chose one of them
     pub fn get_best_move(&self, board: &Board) -> Point {
         let mut high_scores = get_empty_cells(&board)
             .iter()
