@@ -1,95 +1,96 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    <title>My awesome Rust, WebAssembly, and Webpack application</title>
-    <link href="style.css" rel="stylesheet">
-       <style type="text/css">
-.grid {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 60px;
-}
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>Tic tac toe Wasm</title>
+    <style type="text/css">
+      body {
+        background-color: yellow;
+      }
+      .grid {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 60px;
+      }
 
-.cell {
-  display: inline-block;
-  width: 150px;
-  height: 150px;
-  border-radius: 75px;
-  opacity: .75;
-  background-color: #aaa;
-  box-shadow: 2px 2px 0px #888888;
-  transition: all 0.2s;
-  cursor: pointer;
-}
+      .cell {
+        display: inline-block;
+        width: 150px;
+        height: 150px;
+        border-radius: 75px;
+        opacity: 0.75;
+        background-color: #aaa;
+        box-shadow: 2px 2px 0px #888888;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
 
-.cell-p1 {
-  display: inline-block;
-  width: 150px;
-  height: 150px;
-  border-radius: 75px;
-  opacity: .75;
-  background-color: #aaa;
-  box-shadow: 2px 2px 0px #888888;
-  transition: all 0.2s;
-  cursor: pointer;
+      .cell-p1 {
+        display: inline-block;
+        width: 150px;
+        height: 150px;
+        border-radius: 75px;
+        opacity: 0.75;
+        background-color: #aaa;
+        box-shadow: 2px 2px 0px #888888;
+        transition: all 0.2s;
+        cursor: pointer;
 
-  background-color: white;
-  cursor: default;
-}
+        background-color: white;
+        cursor: default;
+      }
 
-.cell-p2 {
-  display: inline-block;
-  width: 150px;
-  height: 150px;
-  border-radius: 75px;
-  opacity: .75;
-  background-color: #aaa;
-  box-shadow: 2px 2px 0px #888888;
-  transition: all 0.2s;
-  cursor: pointer;
+      .cell-p2 {
+        display: inline-block;
+        width: 150px;
+        height: 150px;
+        border-radius: 75px;
+        opacity: 0.75;
+        background-color: #aaa;
+        box-shadow: 2px 2px 0px #888888;
+        transition: all 0.2s;
+        cursor: pointer;
 
-  background-color: black;
-  cursor: default;
-}
+        background-color: black;
+        cursor: default;
+      }
 
-.announcement {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+      .announcement {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
 
-  position: absolute;
-  top: 20%;
-  bottom: 20%;
-  left: 20%;
-  right: 20%;
+        position: absolute;
+        top: 20%;
+        bottom: 20%;
+        left: 20%;
+        right: 20%;
 
-  border-radius: 20px;
-  background-color: rgba(0, 0, 0, 0.8);
-  text-align: center;
-  font-size: 2em;
-  color: white;
+        border-radius: 20px;
+        background-color: rgba(0, 0, 0, 0.8);
+        text-align: center;
+        font-size: 2em;
+        color: white;
 
-  button {
-    height: 50px;
-    width: 100px;
+        button {
+          height: 50px;
+          width: 100px;
 
-    font-size: 0.5em;
-    font-weight: bold;
+          font-size: 0.5em;
+          font-weight: bold;
 
-    border: none;
-    border-radius: 10px;
-    background-color: white;
-    color: purple;
-  }
-}
-   </style> 
+          border: none;
+          border-radius: 10px;
+          background-color: white;
+          color: purple;
+        }
+      }
+    </style>
   </head>
   <body>
-     <div id="app"></div>
+    <div id="app"></div>
   </body>
 </html>
-

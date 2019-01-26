@@ -36,6 +36,7 @@ import("../crate/pkg").then(({ Board, Ai }) => {
       let [x, y] = event.target.dataset.cell.split("_");
       x = parseInt(x);
       y = parseInt(y);
+      console.log('getCell', this.board.getCell(x, y))
       const cellEmpty = this.board.getCell(x, y) === 0;
       if (cellEmpty) {
         this.move(x, y, this.state.player, () => {
@@ -54,8 +55,11 @@ import("../crate/pkg").then(({ Board, Ai }) => {
 
     // Make an AI move, with a small delay for a more natural response time.
     aiMove() {
-      const [x, y] = ai.move(this.board, this.state.player);
-
+      const point = ai.aiMove(this.board, this.state.player);
+      let x = point.getX();
+      let y = point.getY();
+      this.state.board[x][y] = this.state.player;
+      debugger
       setTimeout(() => {
         this.move(x, y, this.state.player, () => {
           this.setState({ player: this.nextPlayer(), freezeBoard: false });
@@ -144,7 +148,7 @@ import("../crate/pkg").then(({ Board, Ai }) => {
   }
 
   ReactDOM.render(
-    <TicTacToe width={3} singlePlayer={false} />,
+    <TicTacToe width={3} singlePlayer={true} />,
     document.getElementById("app")
   );
 });

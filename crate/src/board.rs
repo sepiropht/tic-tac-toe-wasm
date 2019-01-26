@@ -5,9 +5,14 @@ pub struct Board {
     board: Vec<Cell>,
 }
 
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(message: String);
+}
 
 #[wasm_bindgen]
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum Cell {
     EMPTY = 0,
     PLAYER1 = 1,
@@ -35,6 +40,8 @@ impl Board {
 
     #[wasm_bindgen(js_name=getCell)]
     pub fn get_cell(&self, x: usize, y: usize) -> Cell {
+        //let res = self.board[self.get_index(x, y)];
+        //log(format!("{:?}", res));
         self.board[self.get_index(x, y)]
     }
 

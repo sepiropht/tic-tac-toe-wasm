@@ -5,8 +5,8 @@ extern crate js_sys;
 
 #[wasm_bindgen]
 extern "C" {
-     #[wasm_bindgen(js_namespace = console)]
-         fn log(message: String);
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(message: String);
 }
 
 #[wasm_bindgen]
@@ -14,6 +14,18 @@ extern "C" {
 pub struct Point {
     x: u32,
     y: u32,
+}
+#[wasm_bindgen]
+
+impl Point {
+    #[wasm_bindgen(js_name=getX)]
+    pub fn get_x(&self) -> u32 {
+        self.x
+    }
+    #[wasm_bindgen(js_name=getY)]
+    pub fn get_y(&self) -> u32 {
+        self.y
+    }
 }
 #[wasm_bindgen]
 pub struct Ai {
@@ -35,16 +47,20 @@ pub struct Ai {
 impl Ai {
     #[wasm_bindgen(constructor, catch)]
     pub fn new() -> Ai {
-        Ai {num_trial: 1000,
-        trial_board: Board::new(3),
-        scores: vec![vec![0]],
+        Ai {
+            num_trial: 20, /*TODO: it should be 1000 to be unbeatable but then is too slow
+                             event much much slower than a pur js version. The browser frozen
+                             */
+            trial_board: Board::new(3),
+            scores: vec![vec![0]],
         }
     }
     fn trial(&mut self, mut player: Cell) {
         let mut empty_cells = get_empty_cells(&self.trial_board);
 
         while self.trial_board.check_win() == Cell::EMPTY {
-            let index = js_sys::Math::floor(js_sys::Math::random() * empty_cells.len() as f64) as usize;
+            let index =
+                js_sys::Math::floor(js_sys::Math::random() * empty_cells.len() as f64) as usize;
             {
                 let pt = &empty_cells[index];
                 self.trial_board
@@ -63,34 +79,42 @@ impl Ai {
         let winner = self.trial_board.check_win();
         let score_player = 2;
         let score_other = 1;
+        let len = self.trial_board.get_dim();
         if winner == Cell::PLAYER1 || winner == Cell::PLAYER2 {
             let other = match player {
                 Cell::PLAYER1 => Cell::PLAYER2,
-                _ => Cell::PLAYER1
+                _ => Cell::PLAYER1,
             };
             log("yeah5".to_string());
-            self.scores = self.scores.clone().into_iter().enumerate().map(|(row_ind, row)| {
-                row.into_iter().enumerate().map(|(cell_ind, cell)| {
-                  if self.trial_board.get_cell(row_ind, cell_ind) == player {
-                      if player == winner {
-                          log("yeah6".to_string());
-                          cell + score_player
-                      } else {
-                          log("yeah6".to_string());
-                          cell - score_player
-                      }
-                  } else if self.trial_board.get_cell(row_ind, cell_ind) == other {
-                      if player == winner {
+            for row_ind in 0..len {
+                for cell_ind in 0..len {
+                    log(format!(
+                        "x: {} y: {}, cellValue: {}",
+                        row_ind, cell_ind, self.scores[row_ind][cell_ind]
+                    ));
 
-                          cell - score_other
-                      } else {
-                          cell + score_other
-                      }
-                  } else {
-                      cell
-                  }
-               }).collect()
-            }).collect()
+                    if self.trial_board.get_cell(row_ind, cell_ind) == player {
+                        if player == winner {
+                            log("yeah11".to_string());
+                        // TODO
+                        // Find help: why these mutations are impossible
+                        // at runtime ?
+                        //self.scores[row_ind][cell_ind] += score_player
+                        } else {
+                            log("yeah10".to_string());
+                            // self.scores[row_ind][cell_ind] -= score_player
+                        }
+                    } else if self.trial_board.get_cell(row_ind, cell_ind) == other {
+                        if player == winner {
+                            log("yeah8".to_string());
+                        //self.scores[row_ind][cell_ind] -= score_other
+                        } else {
+                            log("yeah7".to_string());
+                            // self.scores[row_ind][cell_ind] += score_other
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -117,7 +141,8 @@ impl Ai {
         let (x, y, _) = if high_scores.len() == 1 {
             high_scores[0]
         } else {
-            let index = js_sys::Math::floor(js_sys::Math::random() * high_scores.len() as f64) as usize;
+            let index =
+                js_sys::Math::floor(js_sys::Math::random() * high_scores.len() as f64) as usize;
             high_scores[index]
         };
 
