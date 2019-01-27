@@ -1,11 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import("../crate/pkg").then(({ Board, Ai }) => {
+import Board from "./board";
+import TicTacToeJS from "./ui";
+import ai from "./ai";
+import { useState } from "react";
 
+import("../crate/pkg").then(({ Board, Ai }) => {
   const ai = new Ai();
   let board = [];
 
- class TicTacToe extends React.Component {
+  class TicTacToe extends React.Component {
     constructor(props) {
       super(props);
       this.board = new Board(props.width);
@@ -36,7 +40,7 @@ import("../crate/pkg").then(({ Board, Ai }) => {
       let [x, y] = event.target.dataset.cell.split("_");
       x = parseInt(x);
       y = parseInt(y);
-      console.log('getCell', this.board.getCell(x, y))
+      //console.log('getCell', this.board.getCell(x, y))
       const cellEmpty = this.board.getCell(x, y) === 0;
       if (cellEmpty) {
         this.move(x, y, this.state.player, () => {
@@ -59,7 +63,6 @@ import("../crate/pkg").then(({ Board, Ai }) => {
       let x = point.getX();
       let y = point.getY();
       this.state.board[x][y] = this.state.player;
-      debugger
       setTimeout(() => {
         this.move(x, y, this.state.player, () => {
           this.setState({ player: this.nextPlayer(), freezeBoard: false });
@@ -108,10 +111,10 @@ import("../crate/pkg").then(({ Board, Ai }) => {
           </div>
         );
       }
-      console.log({board})
+      //console.log({board})
       const grid = board.map((row, rowInd) => {
         const cells = row.map((cell, cellInd) => {
-        console.log('aa', cell, cellInd)
+          // console.log('aa', cell, cellInd)
           const classString =
             cell > 0 ? (cell === 1 ? "cell-p1" : "cell-p2") : "cell";
           const coords = `${rowInd}_${cellInd}`;
@@ -147,8 +150,46 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     }
   }
 
-  ReactDOM.render(
-    <TicTacToe width={3} singlePlayer={true} />,
-    document.getElementById("app")
-  );
+  function App() {
+    // Declare a new state variable, which we'll call "count"
+    const [selectedOption, setOption] = useState("wasm");
+    const handleChange = e => setOption(e.target.value);
+    const Game =
+      selectedOption === "wasm" ? (
+        <TicTacToe width={3} singlePlayer={true} />
+      ) : (
+        <TicTacToeJS width={3} singlePlayer={true} />
+      );
+    return (
+      <>
+        <form>
+          <div className="radio">
+            <label>
+              <input
+                type="radio"
+                value="wasm"
+                checked={selectedOption === "wasm"}
+                onChange={handleChange}
+              />
+              Wasm
+            </label>
+          </div>
+          <div className="radio">
+            <label>
+              <input
+                type="radio"
+                value="js"
+                checked={selectedOption === "js"}
+                onChange={handleChange}
+              />
+              JavaScript
+            </label>
+          </div>
+        </form>
+        {Game}
+      </>
+    );
+  }
+
+  ReactDOM.render(<App/>, document.getElementById("app"));
 });
