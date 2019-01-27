@@ -2,6 +2,8 @@ use board::Board;
 use board::Cell;
 use wasm_bindgen::prelude::*;
 extern crate js_sys;
+extern crate web_sys;
+use web_sys::console;
 
 #[wasm_bindgen]
 extern "C" {
@@ -48,7 +50,7 @@ impl Ai {
     #[wasm_bindgen(constructor, catch)]
     pub fn new() -> Ai {
         Ai {
-            num_trial: 20, /*TODO: it should be 1000 to be unbeatable but then is too slow
+            num_trial: 1000, /*TODO: it should be 1000 to be unbeatable but then is too slow
                              event much much slower than a pur js version. The browser frozen
                              */
             trial_board: Board::new(3),
@@ -58,6 +60,7 @@ impl Ai {
     fn trial(&mut self, mut player: Cell) {
         let mut empty_cells = get_empty_cells(&self.trial_board);
         // Simulate a complete game between the currentState of the board and the endgame
+        console::time_with_label("trial");
         while self.trial_board.check_win() == Cell::EMPTY {
             let index =
                 js_sys::Math::floor(js_sys::Math::random() * empty_cells.len() as f64) as usize;
@@ -73,57 +76,52 @@ impl Ai {
                 _ => player,
             }
         }
+        console::time_end_with_label("trial");
     }
     /*Put a weigth on each cell according to the result of the trial
-      if the currentPlayer win the trial then all the cells where you have 'ENUM::CURRENTPLAYER' is incremented
-      orthewise decremented
-      this code is called trial_num times aka 1000 times!!
-      this is necessary to make the ai unbeatable
-     */
+     if the currentPlayer win the trial then all the cells where you have 'ENUM::CURRENTPLAYER' is incremented
+     orthewise decremented
+     this code is called trial_num times aka 1000 times!!
+     this is necessary to make the ai unbeatable
+    */
     pub fn update_scores(&mut self, player: Cell) {
+        console::time_with_label("update_score");
         let winner = self.trial_board.check_win();
         let score_player = 2;
         let score_other = 1;
-        let len = self.trial_board.get_dim();
         if winner == Cell::PLAYER1 || winner == Cell::PLAYER2 {
             let other = match player {
                 Cell::PLAYER1 => Cell::PLAYER2,
                 _ => Cell::PLAYER1,
             };
-            log("yeah5".to_string());
-            for row_ind in 0..len {
-                for cell_ind in 0..len {
-                    log(format!(
-                        "x: {} y: {}, cellValue: {}",
-                        row_ind, cell_ind, self.scores[row_ind][cell_ind]
-                    ));
-
+            //log("yeah5".to_string());
+            for (row_ind, rows) in self.scores.iter_mut().enumerate() {
+                log(format!("scores {:?}", rows));
+                for (cell_ind, cell) in rows.iter_mut().enumerate() {
                     if self.trial_board.get_cell(row_ind, cell_ind) == player {
                         if player == winner {
-                            log("yeah11".to_string());
-                        // TODO
-                        // help: why these mutations are impossible
-                        // at runtime ?
-                        //self.scores[row_ind][cell_ind] += score_player
+                            // TODO
+                            // help: why these mutations are impossible
+                            // at runtime ?
+                            *cell = *cell + score_player;
                         } else {
-                            log("yeah10".to_string());
-                            // self.scores[row_ind][cell_ind] -= score_player
+                            *cell = *cell - score_player;
                         }
                     } else if self.trial_board.get_cell(row_ind, cell_ind) == other {
                         if player == winner {
-                            log("yeah8".to_string());
-                        //self.scores[row_ind][cell_ind] -= score_other
+                            *cell = *cell - score_other;
                         } else {
-                            log("yeah7".to_string());
-                            // self.scores[row_ind][cell_ind] += score_other
+                            *cell = *cell + score_other;
                         }
                     }
                 }
             }
         }
+        console::time_end_with_label("update_score");
     }
     // Take all the best scores form self.scores then randomly chose one of them
     pub fn get_best_move(&self, board: &Board) -> Point {
+        console::time_with_label("best_move");
         let mut high_scores = get_empty_cells(&board)
             .iter()
             .map(|pt| {
@@ -134,9 +132,9 @@ impl Ai {
                 )
             })
             .collect::<Vec<(usize, usize, u32)>>();
-
-        high_scores.sort_by(|a, b| a.2.partial_cmp(&b.2).unwrap());
-
+        log(format!("scores {:?}", self.scores));
+        high_scores.sort_by(|a, b| b.2.partial_cmp(&a.2).unwrap());
+        log(format!("high_scores really {:?}", high_scores));
         let max_score = high_scores[0].2;
         let high_scores: Vec<(usize, usize, u32)> = high_scores
             .into_iter()
@@ -150,7 +148,7 @@ impl Ai {
                 js_sys::Math::floor(js_sys::Math::random() * high_scores.len() as f64) as usize;
             high_scores[index]
         };
-
+        console::time_end_with_label("best_move");
         Point {
             x: x as u32,
             y: y as u32,
@@ -161,24 +159,22 @@ impl Ai {
     // for the AI player.
     #[wasm_bindgen(js_name=aiMove)]
     pub fn ai_move(&mut self, current_board: &Board, player: Cell) -> Point {
+        console::time_with_label("ai_move");
         let mut scores = vec![];
         for _ in 0..current_board.get_dim() {
             let mut row = vec![];
             for _ in 0..current_board.get_dim() {
-                row.push(0);
+                row.push(100000000);
             }
             scores.push(row);
         }
         self.scores = scores;
-        log("yeah1".to_string());
         for _ in 0..self.num_trial {
             self.trial_board = Board::clone_board(&current_board);;
-            log("yeah2".to_string());
             self.trial(player);
-            log("yeah3".to_string());
             self.update_scores(player);
-            log("yeah4".to_string());
         }
+        console::time_end_with_label("ai_move");
         self.get_best_move(&current_board)
     }
 }
