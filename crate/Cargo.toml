@@ -1,11 +1,11 @@
 [package]
-authors = ["The RustWasm Developers"]
+authors = ["sepiropht"]
 categories = ["wasm"]
-description = "My super awesome Rust, WebAssembly, and Webpack project!"
+description = "Toy project to learn wasm and rust!"
 license = "Apache-2.0/MIT"
-name = "rust-webpack"
+name = "tic-tac-toe-wasm"
 readme = "./README.md"
-repository = "https://github.com/rustwasm/rust-webpack-template"
+repository = "https://github.com/sepiropht/tic-tac-toe-wasm"
 version = "0.1.0"
 
 [lib]
@@ -28,13 +28,14 @@ console_error_panic_hook = { version = "0.1.5", optional = true }
 wee_alloc = { version = "0.4.2", optional = true }
 
 [dependencies.web-sys]
-version = "0.3"
+version = "0.3.10"
 features = [
   "Document",
   "Element",
   "HtmlElement",
   "Node",
   "Window",
+  "console",
 ]
 
 [features]
