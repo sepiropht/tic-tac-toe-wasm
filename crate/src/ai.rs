@@ -36,23 +36,12 @@ pub struct Ai {
     scores: Vec<Vec<u32>>,
 }
 
-/*   pub fn get_coord(&self, index: usize) -> Point {
-    let x = index / self.get_dim();
-    let y = index - (self.get_dim() * x);
-    Point {
-        x: x as u32,
-        y: y as u32
-    }
-}
-*/
 #[wasm_bindgen]
 impl Ai {
     #[wasm_bindgen(constructor, catch)]
     pub fn new() -> Ai {
         Ai {
-            num_trial: 1000, /*TODO: it should be 1000 to be unbeatable but then is too slow
-                             event much much slower than a pur js version. The browser frozen
-                             */
+            num_trial: 1000,
             trial_board: Board::new(3),
             scores: vec![vec![0]],
         }
@@ -96,13 +85,10 @@ impl Ai {
             };
             //log("yeah5".to_string());
             for (row_ind, rows) in self.scores.iter_mut().enumerate() {
-                log(format!("scores {:?}", rows));
+                //log(format!("scores {:?}", rows));
                 for (cell_ind, cell) in rows.iter_mut().enumerate() {
                     if self.trial_board.get_cell(row_ind, cell_ind) == player {
                         if player == winner {
-                            // TODO
-                            // help: why these mutations are impossible
-                            // at runtime ?
                             *cell = *cell + score_player;
                         } else {
                             *cell = *cell - score_player;
@@ -132,9 +118,7 @@ impl Ai {
                 )
             })
             .collect::<Vec<(usize, usize, u32)>>();
-        log(format!("scores {:?}", self.scores));
         high_scores.sort_by(|a, b| b.2.partial_cmp(&a.2).unwrap());
-        log(format!("high_scores really {:?}", high_scores));
         let max_score = high_scores[0].2;
         let high_scores: Vec<(usize, usize, u32)> = high_scores
             .into_iter()
@@ -164,6 +148,7 @@ impl Ai {
         for _ in 0..current_board.get_dim() {
             let mut row = vec![];
             for _ in 0..current_board.get_dim() {
+                // Why such a big number ? Well avoid negative result in update_scores
                 row.push(100000000);
             }
             scores.push(row);
