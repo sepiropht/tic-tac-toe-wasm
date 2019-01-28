@@ -162,16 +162,22 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     // Set Wasm by default
     const [selectedOption, setOption] = useState("wasm");
     const handleChange = e => setOption(e.target.value);
+
+    // 3*3 grid by default
+    const [width, setWidth] = useState(3);
+    const handleChangeWidth = e => setWidth(parseInt(e.target.value));
+
     const Game =
       selectedOption === "wasm" ? (
-        <TicTacToe width={10} singlePlayer={true} />
+        <TicTacToe width={width} singlePlayer={true} />
       ) : (
-        <TicTacToeJS width={10} singlePlayer={true} />
+        <TicTacToeJS width={width} singlePlayer={true} />
       );
     return (
       <>
         <h1> TicTacToe in wasm </h1>
         <form>
+          <h2> Choose ai implementation </h2>
           <div className="radio">
             <label>
               <input
@@ -194,6 +200,17 @@ import("../crate/pkg").then(({ Board, Ai }) => {
               JavaScript
             </label>
           </div>
+              <div>
+                  <h2> Size of the board </h2>
+                  <label>
+                    Size of the board:
+                <input
+                  name="width"
+                  type="number"
+                  value={width}
+                  onChange={handleChangeWidth} />
+                  </label>
+              </div>
         </form>
         {Game}
       </>
