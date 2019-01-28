@@ -46,7 +46,7 @@ impl Ai {
             scores: vec![vec![0]],
         }
     }
-    // TODO this method is very slow most of times in spent here
+    // TODO this method is very slow most of times is spent here
     fn trial(&mut self, mut player: Cell) {
         let mut empty_cells = get_empty_cells(&self.trial_board);
         // Simulate a complete game between the currentState of the board and the endgame
@@ -54,7 +54,7 @@ impl Ai {
         while self.trial_board.check_win() == Cell::EMPTY {
             let index =
                 js_sys::Math::floor(js_sys::Math::random() * empty_cells.len() as f64) as usize;
-            let pt = &empty_cells.clone()[index];
+            let pt = empty_cells[index].clone();
             self.trial_board
                 .player_move(pt.x as usize, pt.y as usize, player);
             empty_cells = get_empty_cells(&self.trial_board);
