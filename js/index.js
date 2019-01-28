@@ -7,14 +7,18 @@ import { useState } from "react";
 
 import("../crate/pkg").then(({ Board, Ai }) => {
   const ai = new Ai();
-  let board = [];
 
   class TicTacToe extends React.Component {
     constructor(props) {
       super(props);
+      let board = [];
       this.board = new Board(props.width);
       for (let i = 0; i < props.width; i++) {
-        board.push([0, 0, 0]);
+        let row = [];
+        for(let j = 0; j < props.width; j++) {
+            row.push(0);
+        }
+        board.push(row);
       }
       this.state = { player: 1, freezeBoard: false, winner: false, board };
     }
@@ -83,9 +87,13 @@ import("../crate/pkg").then(({ Board, Ai }) => {
 
     reset() {
       this.board = new Board(this.props.width);
-      board = [];
-      for (let i = 0; i < this.props.width; i++) {
-        board.push([0, 0, 0]);
+      const board = [];
+      for (let i = 0; i < props.width; i++) {
+        let row = [];
+        for(let j = 0; j < props.width; j++) {
+            row.push(0);
+        }
+        board.push(row);
       }
       this.setState({ player: 1, freezeBoard: false, winner: false, board });
       this.aiInit();
@@ -151,17 +159,18 @@ import("../crate/pkg").then(({ Board, Ai }) => {
   }
 
   function App() {
-    // Declare a new state variable, which we'll call "count"
+    // Set Wasm by default
     const [selectedOption, setOption] = useState("wasm");
     const handleChange = e => setOption(e.target.value);
     const Game =
       selectedOption === "wasm" ? (
-        <TicTacToe width={3} singlePlayer={true} />
+        <TicTacToe width={10} singlePlayer={true} />
       ) : (
-        <TicTacToeJS width={3} singlePlayer={true} />
+        <TicTacToeJS width={10} singlePlayer={true} />
       );
     return (
       <>
+        <h1> TicTacToe in wasm </h1>
         <form>
           <div className="radio">
             <label>
