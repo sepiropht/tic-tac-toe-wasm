@@ -15,8 +15,8 @@ import("../crate/pkg").then(({ Board, Ai }) => {
       this.board = new Board(props.width);
       for (let i = 0; i < props.width; i++) {
         let row = [];
-        for(let j = 0; j < props.width; j++) {
-            row.push(0);
+        for (let j = 0; j < props.width; j++) {
+          row.push(0);
         }
         board.push(row);
       }
@@ -90,8 +90,8 @@ import("../crate/pkg").then(({ Board, Ai }) => {
       const board = [];
       for (let i = 0; i < props.width; i++) {
         let row = [];
-        for(let j = 0; j < props.width; j++) {
-            row.push(0);
+        for (let j = 0; j < props.width; j++) {
+          row.push(0);
         }
         board.push(row);
       }
@@ -165,8 +165,10 @@ import("../crate/pkg").then(({ Board, Ai }) => {
 
     // 3*3 grid by default
     const [width, setWidth] = useState(3);
-    const handleChangeWidth = e => setWidth(parseInt(e.target.value));
-
+    const handleChangeWidth = e =>
+      e.target.value > 2 && e.target.value < 11
+        ? setWidth(parseInt(e.target.value))
+        : width;
     const Game =
       selectedOption === "wasm" ? (
         <TicTacToe width={width} singlePlayer={true} />
@@ -200,22 +202,23 @@ import("../crate/pkg").then(({ Board, Ai }) => {
               JavaScript
             </label>
           </div>
-              <div>
-                  <h2> Size of the board </h2>
-                  <label>
-                    Size of the board:
-                <input
-                  name="width"
-                  type="number"
-                  value={width}
-                  onChange={handleChangeWidth} />
-                  </label>
-              </div>
+          <div>
+            <h2> Size of the board </h2>
+            <label>
+              Size of the board:
+              <input
+                name="width"
+                type="number"
+                value={width}
+                onChange={handleChangeWidth}
+              />
+            </label>
+          </div>
         </form>
         {Game}
       </>
     );
   }
 
-  ReactDOM.render(<App/>, document.getElementById("app"));
+  ReactDOM.render(<App />, document.getElementById("app"));
 });
