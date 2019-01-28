@@ -12,7 +12,7 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub struct Point {
     x: u32,
     y: u32,
@@ -54,11 +54,9 @@ impl Ai {
         while self.trial_board.check_win() == Cell::EMPTY {
             let index =
                 js_sys::Math::floor(js_sys::Math::random() * empty_cells.len() as f64) as usize;
-            {
-                let pt = &empty_cells[index];
-                self.trial_board
-                    .player_move(pt.x as usize, pt.y as usize, player);
-            }
+            let pt = &empty_cells.clone()[index];
+            self.trial_board
+                .player_move(pt.x as usize, pt.y as usize, player);
             empty_cells = get_empty_cells(&self.trial_board);
             player = match player {
                 Cell::PLAYER1 => Cell::PLAYER2,
