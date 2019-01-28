@@ -6,6 +6,7 @@ let ai = {
   // Play a game starting with the given player by making
   // random moves, alternating between players.
   trial(player) {
+    console.time('trial');
     let emptyCells = this.trialBoard.getEmptyCells();
 
     while (this.trialBoard.checkWin() === false) {
@@ -14,6 +15,7 @@ let ai = {
       emptyCells = this.trialBoard.getEmptyCells();
       player = player === 1 ? 2 : 1;
     }
+    console.timeEnd('trial');
   },
 
   // Score the completed board and update the scores grid.
@@ -77,6 +79,7 @@ let ai = {
   // Use a Monte Carlo simulation to return a move
   // for the AI player.
   move(currentBoard, player) {
+    console.time('ai_move');
     this.scores = new Board(currentBoard.getDim()).board;
 
     for (var i = 0; i < this.numTrials; i++) {
@@ -84,9 +87,10 @@ let ai = {
       this.trial(player);
       this.updateScores(player);
     }
-
+    console.timeEnd('ai_move')
     return this.getBestMove(currentBoard);
   }
+
 };
 
 export default ai;
