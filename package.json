@@ -8,7 +8,7 @@
     "start": "webpack-dev-server -d",
     "build": "webpack --mode production",
     "serve": "serve ./dist",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist -b gh-pages"
   },
   "bin": {
     "create-rust-webpack": ".bin/create-rust-webpack.js"
