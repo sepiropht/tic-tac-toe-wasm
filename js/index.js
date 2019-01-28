@@ -177,7 +177,7 @@ import("../crate/pkg").then(({ Board, Ai }) => {
       <>
         <h1> TicTacToe in wasm </h1>
         <form>
-          <h2> Choose ai implementation </h2>
+          Choose an implementation in JavaScript or Rust/Wasm
           <div className="radio">
             <label>
               <input
