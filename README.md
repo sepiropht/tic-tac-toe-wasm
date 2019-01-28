@@ -1,29 +1,37 @@
-# 🦀🕸 `rust-webpack-template`
+# tic-tac-toe in rust/wasm
 
-> **Kickstart your Rust, WebAssembly, and Webpack project!**
 
-This template is designed for creating monorepo-style Web applications with
-Rust-generated WebAssembly and Webpack without publishing your wasm to NPM.
+[![Demo](https://img.shields.io/badge/demo-online-blue.svg)](https://sepiropht.github.io/tic-tac-toe-wasm/)
 
-* Want to create and publish NPM packages with Rust and WebAssembly? [Check out
-  `wasm-pack-template`.](https://github.com/rustwasm/wasm-pack-template)
+A Rust/Wasm implementation of Tic Tac Toe.
 
-## 🔋 Batteries Included
+The ui is stil in plain javascript. 
 
-This template comes pre-configured with all the boilerplate for compiling Rust
-to WebAssembly and hooking into a Webpack build pipeline.
+There is also js implementation of the ai for comparaison with wasm.
 
-* `npm run start` -- Serve the project locally for development at
-  `http://localhost:8080`.
+It use a Monte Carlo simulation to power the Ai
 
-* `npm run build` -- Bundle the project (in production mode).
 
-## 🚴 Using This Template
+## Prerequisites
 
-First, [install `wasm-pack`!](https://rustwasm.github.io/wasm-pack/installer/)
+Rust / Node / npm
 
-Then, use `npm init` to clone this template:
+Currently, only the nightly toolchain of Rust is supporting WebAssembly:
 
-```sh
-npm init rust-webpack my-app
+```shell
+rustup default nightly
+rustup target add wasm32-unknown-unknown
 ```
+
+## Install
+
+Make sure you have `cargo install wasm-pack`, then:
+
+```shell
+npm install
+```
+
+## Run
+
+```shell
+npm start
