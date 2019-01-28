@@ -6,7 +6,7 @@
   "license": "Apache-2.0/MIT",
   "scripts": {
     "start": "webpack-dev-server -d",
-    "build": "webpack",
+    "build": "webpack --mode production",
     "serve": "serve ./dist",
     "deploy": "gh-pages -d dist"
   },
