@@ -88,9 +88,9 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     reset() {
       this.board = new Board(this.props.width);
       const board = [];
-      for (let i = 0; i < props.width; i++) {
+      for (let i = 0; i < this.props.width; i++) {
         let row = [];
-        for (let j = 0; j < props.width; j++) {
+        for (let j = 0; j < this.props.width; j++) {
           row.push(0);
         }
         board.push(row);
