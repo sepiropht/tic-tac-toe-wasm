@@ -1,13 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Board from "./board";
+import BoardJS from "./board";
 import TicTacToeJS from "./ui";
-import ai from "./ai";
+import aiJS from "./ai";
 import { useState } from "react";
 
 import("../crate/pkg").then(({ Board, Ai }) => {
-  const ai = new Ai();
-
+  let ai;
   class TicTacToe extends React.Component {
     constructor(props) {
       super(props);
@@ -20,7 +19,14 @@ import("../crate/pkg").then(({ Board, Ai }) => {
         }
         board.push(row);
       }
-      this.state = { player: 1, freezeBoard: false, winner: false, board };
+      ai = props.isWasm ? new Ai(): aiJS;
+      this.state = {
+        player: 1,
+        freezeBoard: false,
+        winner: false,
+        board,
+        isWasm: props.isWasm
+      };
     }
 
     nextPlayer() {
@@ -31,8 +37,10 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     move(x, y, player, callback) {
       this.board.playerMove(x, y, player);
       const winner = this.board.checkWin();
-
-      if (winner !== 0) {
+      if(isNaN(winner)) {
+	      winner = winner === 0
+      }
+      if (winner) {
         this.setState({ winner, freezeBoard: true });
       } else {
         callback();
@@ -63,9 +71,15 @@ import("../crate/pkg").then(({ Board, Ai }) => {
 
     // Make an AI move, with a small delay for a more natural response time.
     aiMove() {
+      //console.log("BBBBBBBBoard", board);
       const point = ai.aiMove(this.board, this.state.player);
-      let x = point.getX();
-      let y = point.getY();
+      let x, y;
+      if (this.props.isWasm) {
+        x = point.getX();
+        y = point.getY();
+      } else {
+        [x, y] = point;
+      }
       this.state.board = this.state.board.map((rows, rowind) =>
         rows.map((cell, cellind) =>
           x === rowind && y === cellind ? this.state.player : cell
@@ -96,7 +110,7 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     }
 
     reset() {
-      this.board = new Board(this.props.width);
+      this.board = this.props.isWasm ? new Board(this.props.width) : new BoardJS(this.props.width);
       const board = [];
 
       for (let i = 0; i < this.props.width; i++) {
@@ -115,13 +129,24 @@ import("../crate/pkg").then(({ Board, Ai }) => {
       }));
       this.aiInit();
     }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+      if (this.props.isWasm !== prevProps.isWasm) {
+	 ai = this.props.isWasm ? new Ai(): aiJS;
+        this.reset();
+      }
+    }
 
     componentDidMount() {
       this.aiInit();
     }
 
     render() {
-      const { board } = this.state;
+      let board;
+      if (this.props.isWasm) {
+        board = this.state.board;
+      } else {
+        board = this.board.board || [];
+      }
       let announcement;
 
       if (this.state.winner) {
@@ -185,12 +210,13 @@ import("../crate/pkg").then(({ Board, Ai }) => {
       e.target.value > 2 && e.target.value < 11
         ? setWidth(parseInt(e.target.value))
         : width;
-    const Game =
-      selectedOption === "wasm" ? (
-        <TicTacToe width={width} singlePlayer={true} />
-      ) : (
-        <TicTacToeJS width={width} singlePlayer={true} />
-      );
+    const Game = (
+      <TicTacToe
+        width={width}
+        isWasm={selectedOption === "wasm"}
+        singlePlayer={true}
+      />
+    );
     return (
       <>
         <h1> TicTacToe in wasm </h1>

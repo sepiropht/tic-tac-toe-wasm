@@ -50,7 +50,7 @@ impl Ai {
     fn trial(&mut self, mut player: Cell) {
         let mut empty_cells = get_empty_cells(&self.trial_board);
         // Simulate a complete game between the currentState of the board and the endgame
-        console::time_with_label("trial");
+        //console::time_with_label("trial");
         while self.trial_board.check_win() == Cell::EMPTY {
             let index =
                 js_sys::Math::floor(js_sys::Math::random() * empty_cells.len() as f64) as usize;
@@ -64,7 +64,7 @@ impl Ai {
                 _ => player,
             }
         }
-        console::time_end_with_label("trial");
+        //console::time_end_with_label("trial");
     }
     /*Put a weigth on each cell according to the result of the trial
      if the currentPlayer win the trial then all the cells where you have 'ENUM::CURRENTPLAYER' is incremented
@@ -73,7 +73,6 @@ impl Ai {
      this is necessary to make the ai unbeatable
     */
     pub fn update_scores(&mut self, player: Cell) {
-        console::time_with_label("update_score");
         let winner = self.trial_board.check_win();
         let score_player = 2;
         let score_other = 1;
@@ -102,11 +101,9 @@ impl Ai {
                 }
             }
         }
-        console::time_end_with_label("update_score");
     }
     // Take all the best scores form self.scores then randomly chose one of them
     pub fn get_best_move(&self, board: &Board) -> Point {
-        console::time_with_label("best_move");
         let mut high_scores = get_empty_cells(&board)
             .iter()
             .map(|pt| {
@@ -131,7 +128,6 @@ impl Ai {
                 js_sys::Math::floor(js_sys::Math::random() * high_scores.len() as f64) as usize;
             high_scores[index]
         };
-        console::time_end_with_label("best_move");
         Point {
             x: x as u32,
             y: y as u32,
@@ -142,7 +138,7 @@ impl Ai {
     // for the AI player.
     #[wasm_bindgen(js_name=aiMove)]
     pub fn ai_move(&mut self, current_board: &Board, player: Cell) -> Point {
-        console::time_with_label("ai_move");
+        console::time_with_label("WASM:ai_move");
         let mut scores = vec![];
         for _ in 0..current_board.get_dim() {
             let mut row = vec![];
@@ -158,7 +154,7 @@ impl Ai {
             self.trial(player);
             self.update_scores(player);
         }
-        console::time_end_with_label("ai_move");
+        console::time_end_with_label("WASM:ai_move");
         self.get_best_move(&current_board)
     }
 }

@@ -30,7 +30,7 @@ class Board {
   }
 
   // Assign a cell on the board to a given player.
-  move(x, y, player) {
+  playerMove(x, y, player) {
     this.board[x][y] = player;
   }
 
