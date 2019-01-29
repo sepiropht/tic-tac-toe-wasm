@@ -66,12 +66,22 @@ import("../crate/pkg").then(({ Board, Ai }) => {
       const point = ai.aiMove(this.board, this.state.player);
       let x = point.getX();
       let y = point.getY();
-      this.state.board[x][y] = this.state.player;
-      setTimeout(() => {
-        this.move(x, y, this.state.player, () => {
-          this.setState({ player: this.nextPlayer(), freezeBoard: false });
-        });
-      }, 200);
+      this.state.board = this.state.board.map((rows, rowind) =>
+        rows.map((cell, cellind) =>
+          x === rowind && y === cellind ? this.state.player : cell
+        )
+      );
+      this.setState(({ board }) => ({
+        board: board.map((rows, rowind) =>
+          rows.map((cell, cellind) =>
+            x === rowind && y === cellind ? this.state.player : cell
+          )
+        )
+      }));
+      //this.state.board[x][y] = this.state.player;
+      this.move(x, y, this.state.player, () => {
+        this.setState({ player: this.nextPlayer(), freezeBoard: false });
+      });
     }
 
     // Determine which player will be the AI in single player mode,
@@ -88,6 +98,7 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     reset() {
       this.board = new Board(this.props.width);
       const board = [];
+
       for (let i = 0; i < this.props.width; i++) {
         let row = [];
         for (let j = 0; j < this.props.width; j++) {
@@ -95,7 +106,13 @@ import("../crate/pkg").then(({ Board, Ai }) => {
         }
         board.push(row);
       }
-      this.setState({ player: 1, freezeBoard: false, winner: false, board });
+      this.state.board = board;
+      this.setState(({ player, freezeBoard, winner, board }) => ({
+        player: 1,
+        freezeBoard: false,
+        winner: false,
+        board
+      }));
       this.aiInit();
     }
 
@@ -122,7 +139,6 @@ import("../crate/pkg").then(({ Board, Ai }) => {
       //console.log({board})
       const grid = board.map((row, rowInd) => {
         const cells = row.map((cell, cellInd) => {
-          // console.log('aa', cell, cellInd)
           const classString =
             cell > 0 ? (cell === 1 ? "cell-p1" : "cell-p2") : "cell";
           const coords = `${rowInd}_${cellInd}`;
