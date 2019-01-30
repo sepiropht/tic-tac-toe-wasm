@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import BoardJS from "./board";
-import TicTacToeJS from "./ui";
 import aiJS from "./ai";
 import { useState } from "react";
 
@@ -19,7 +18,7 @@ import("../crate/pkg").then(({ Board, Ai }) => {
         }
         board.push(row);
       }
-      ai = props.isWasm ? new Ai(): aiJS;
+      ai = props.isWasm ? new Ai() : aiJS;
       this.state = {
         player: 1,
         freezeBoard: false,
@@ -37,8 +36,8 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     move(x, y, player, callback) {
       this.board.playerMove(x, y, player);
       const winner = this.board.checkWin();
-      if(isNaN(winner)) {
-	      winner = winner === 0
+      if (isNaN(winner)) {
+        winner = winner === 0;
       }
       if (winner) {
         this.setState({ winner, freezeBoard: true });
@@ -110,7 +109,9 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     }
 
     reset() {
-      this.board = this.props.isWasm ? new Board(this.props.width) : new BoardJS(this.props.width);
+      this.board = this.props.isWasm
+        ? new Board(this.props.width)
+        : new BoardJS(this.props.width);
       const board = [];
 
       for (let i = 0; i < this.props.width; i++) {
@@ -131,7 +132,7 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
       if (this.props.isWasm !== prevProps.isWasm) {
-	 ai = this.props.isWasm ? new Ai(): aiJS;
+        ai = this.props.isWasm ? new Ai() : aiJS;
         this.reset();
       }
     }
