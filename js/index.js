@@ -2,9 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import BoardJS from "./board";
 import aiJS from "./ai";
-import { useState, useReducer, useEffect } from "react";
+import { useState, useReducer, useEffect, useRef } from "react";
 
-let modelBoard, ai;
 
 function reducer(state, action) {
   switch (action.type) {
@@ -53,6 +52,8 @@ function reducer(state, action) {
 
 import("../crate/pkg").then(({ Board, Ai }) => {
   function TicTacToe({ isWasm, width, singlePlayer, reset }) {
+    const modelBoard = useRef( isWasm ? new Board(width) : new BoardJS(width));
+    const ai = useRef( isWasm ? new Ai(): aiJS);
     useEffect(() => {
       const board = [];
       for (let i = 0; i < width; i++) {
@@ -62,6 +63,8 @@ import("../crate/pkg").then(({ Board, Ai }) => {
         }
         board.push(row);
       }
+    modelBoard.current = isWasm ? new Board(width) : new BoardJS(width);
+    ai.current = isWasm ? new Ai(): aiJS;
       dispatch({ type: "init", payload: board });
       aiInit();
     }, [width, isWasm, ai]);
@@ -75,9 +78,9 @@ import("../crate/pkg").then(({ Board, Ai }) => {
 
     // Place a move on the board and check for a winner.
     function move(x, y, player, callback) {
-      modelBoard.playerMove(x, y, player);
+      modelBoard.current.playerMove(x, y, player);
 
-      let winner = modelBoard.checkWin();
+      let winner = modelBoard.current.checkWin();
       if (isNaN(winner)) {
         winner = winner === 0;
       }
@@ -95,7 +98,7 @@ import("../crate/pkg").then(({ Board, Ai }) => {
       x = parseInt(x);
       y = parseInt(y);
 
-      const cellEmpty = modelBoard.getCell(x, y) === 0;
+      const cellEmpty = modelBoard.current.getCell(x, y) === 0;
       if (cellEmpty) {
         move(x, y, player, () => {
           dispatch({
@@ -115,7 +118,7 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     }
 
     function aiMove(player = 1) {
-      const point = ai.aiMove(modelBoard, player);
+      const point = ai.current.aiMove(modelBoard.current, player);
       let x, y;
       if (isWasm) {
         x = point.getX();
@@ -146,7 +149,7 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     }
 
 
-    let boardView = isWasm ? state.board || [] : modelBoard.board || [];
+    let boardView = isWasm ? state.board || [] : modelBoard.current.board || [];
     let announcement;
 
     if (state.winner) {
@@ -199,9 +202,6 @@ import("../crate/pkg").then(({ Board, Ai }) => {
     const [selectedOption, setOption] = useState("wasm");
     const handleChange = e => setOption(e.target.value);
     const [width, setWidth] = useState(3);
-    ai = selectedOption === "wasm" ? new Ai() : aiJS;
-    modelBoard =
-      selectedOption === "wasm" ? new Board(width) : new BoardJS(width);
 
     const handleChangeWidth = e =>
       e.target.value > 2 && e.target.value < 11
@@ -209,10 +209,6 @@ import("../crate/pkg").then(({ Board, Ai }) => {
         : width;
 
     function reset() {
-      ai = undefined;
-      ai = selectedOption === "wasm" ? new Ai() : aiJS;
-      modelBoard =
-        selectedOption === "wasm" ? new Board(width) : new BoardJS(width);
     }
     return (
       <>
