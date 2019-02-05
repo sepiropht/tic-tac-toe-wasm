@@ -5,7 +5,7 @@
 
 A Rust/Wasm implementation of Tic Tac Toe.
 
-The ui is stil in plain javascript. 
+The ui is stil in plain javascript.
 
 There is also js implementation of the ai for comparaison with wasm.
 
@@ -35,3 +35,12 @@ npm install
 
 ```shell
 npm start
+```
+
+## Test
+
+Run the rust tests
+
+```shell
+npm run test:rust
+```
