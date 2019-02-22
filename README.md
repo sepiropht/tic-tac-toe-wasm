@@ -16,10 +16,8 @@ It use a Monte Carlo simulation to power the Ai
 
 Rust / Node / npm
 
-Currently, only the nightly toolchain of Rust is supporting WebAssembly:
 
 ```shell
-rustup default nightly
 rustup target add wasm32-unknown-unknown
 ```
 
