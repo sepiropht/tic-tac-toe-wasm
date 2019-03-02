@@ -46,7 +46,7 @@ impl Ai {
             scores: vec![vec![0]],
         }
     }
-    // TODO this method is very slow most of times is spent here
+
     fn trial(&mut self, mut player: Cell) {
         let mut empty_cells = get_empty_cells(&self.trial_board);
         // Simulate a complete game between the currentState of the board and the endgame
