@@ -10,7 +10,7 @@ export default new Promise(async $export  => {
 
   $export({TicTacToe})
 
-  function TicTacToe({ isWasm, width, singlePlayer, reset }) {
+  function TicTacToe({ isWasm, width, singlePlayer, reset , dumb}) {
     const modelBoard = useRef(isWasm ? new Board(width) : new BoardJS(width));
     const ai = useRef(isWasm ? new Ai() : aiJS);
 
@@ -27,7 +27,7 @@ export default new Promise(async $export  => {
       ai.current = isWasm ? new Ai() : aiJS;
       dispatch({ type: "init", payload: board });
       aiInit();
-    }, [width, isWasm, ai]);
+    }, [width, isWasm, ai, dumb]);
 
     const initialState = {
       isWasm,

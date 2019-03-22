@@ -14,15 +14,15 @@ import "babel-polyfill";
   function App() {
     // Set Wasm by default
     const [selectedOption, setOption] = useState("wasm");
+    const [dumb, setDumb] = useState(0);
     const handleChange = e => setOption(e.target.value);
     const [width, setWidth] = useState(3);
-
     const handleChangeWidth = e =>
       e.target.value > 2 && e.target.value < 11
         ? setWidth(parseInt(e.target.value))
         : width;
 
-    function reset() {}
+    function reset() {setDumb(dumb + 1)}
     return (
       <>
         <h1> TicTacToe in wasm </h1>
@@ -65,6 +65,7 @@ import "babel-polyfill";
         </form>
         <TicTacToe
           width={width}
+	  dumb={dumb}
           isWasm={selectedOption === "wasm"}
           reset={reset}
           singlePlayer={true}
