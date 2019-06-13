@@ -16,7 +16,7 @@ import "babel-polyfill";
     const [selectedOption, setOption] = useState("wasm");
     const [dumb, setDumb] = useState(0);
     const handleChange = e => setOption(e.target.value);
-    const [width, setWidth] = useState(3);
+    const [width, setWidth] = useState(10);
     const handleChangeWidth = e =>
       e.target.value > 2 && e.target.value < 11
         ? setWidth(parseInt(e.target.value))
