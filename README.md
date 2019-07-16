@@ -1,7 +1,7 @@
 # tic-tac-toe in rust/wasm
 
 
-[![Demo](https://img.shields.io/badge/demo-online-blue.svg)](https://sepiropht.github.io/tic-tac-toe-wasm/)
+[![Demo](https://img.shields.io/badge/demo-online-blue.svg)](https://sepiropht.github.io/tic-tac-toe-wasm/) [![Greenkeeper badge](https://badges.greenkeeper.io/sepiropht/tic-tac-toe-wasm.svg)](https://greenkeeper.io/)
 
 A Rust/Wasm implementation of Tic Tac Toe.
 
