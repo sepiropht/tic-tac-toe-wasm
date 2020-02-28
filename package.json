@@ -31,6 +31,6 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "react": "^16.13.0",
-    "react-dom": "^16.8.5"
+    "react-dom": "^16.13.0"
   }
 }
