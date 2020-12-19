@@ -21,7 +21,7 @@
     "@babel/preset-react": "^7.0.0",
     "@wasm-tool/wasm-pack-plugin": "1.0.1",
     "babel-loader": "^8.0.5",
-    "html-webpack-plugin": "^4.0.0",
+    "html-webpack-plugin": "^4.2.2",
     "gh-pages": "^3.0.0",
     "serve": "^11.1.0",
     "webpack": "^4.29.6",
